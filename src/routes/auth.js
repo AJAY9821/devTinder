@@ -1,7 +1,7 @@
 const express = require("express")
 const authRoutes = express.Router()
 const bcrypt = require("bcrypt")
-const validateSignUpAndDate = require("../util/validator")
+const {validateSignUpAndDate} = require("../util/validator")
 const User = require("../model/user")
 
 
@@ -11,7 +11,7 @@ authRoutes.post("/signup", async (req,res) => {
 
         validateSignUpAndDate(req)
 
-        const { password, firstName, lastName, emailId } = req.body
+        const { password, firstName, lastName, emailId,age } = req.body
 
         const passwordHashing = await bcrypt.hash(password,10)
 
@@ -19,7 +19,8 @@ authRoutes.post("/signup", async (req,res) => {
             firstName,
             lastName,
             emailId,
-            password: passwordHashing
+            password: passwordHashing,
+            age
         })
 
         await user.save()
