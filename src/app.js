@@ -2,11 +2,19 @@ const express = require("express")
 const database = require("./config/db") 
 const  cookieparser = require("cookie-parser")
 const app = express();
+const Cors = require("cors")
+
+
+require('dotenv').config() 
 
 
 
 app.use(express.json())
 app.use(cookieparser())
+app.use(Cors({
+    origin:"http://localhost:5173",
+    credentials:true
+}))
 
 const authRoutes = require("./routes/auth")
 const profileRoutes = require("./routes/profile")

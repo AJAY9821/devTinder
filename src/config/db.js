@@ -1,8 +1,11 @@
 const mongoose = require("mongoose")
 
+console.log(process.env.DB_CONNECTION_STRING)
+
 const database = async () => {
     try {
-        await mongoose.connect("mongodb+srv://learnNode:Rp6sKUBq6YJNcVqD@learnnode.6eepgzc.mongodb.net/tinder")
+        console.log(process.env.DB_CONNECTION_STRING)
+        await mongoose.connect(process.env.DB_CONNECTION_STRING)
  
 
     } catch (err) {

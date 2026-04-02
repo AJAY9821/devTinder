@@ -11,7 +11,7 @@ authRoutes.post("/signup", async (req,res) => {
 
         validateSignUpAndDate(req)
 
-        const { password, firstName, lastName, emailId,age } = req.body
+        const { password, firstName, lastName, emailId } = req.body
 
         const passwordHashing = await bcrypt.hash(password,10)
 
@@ -19,18 +19,25 @@ authRoutes.post("/signup", async (req,res) => {
             firstName,
             lastName,
             emailId,
-            password: passwordHashing,
-            age
+            password: passwordHashing, 
+            
         })
 
-        await user.save()
+        const saveUser = await user.save()
 
-        res.send("Data added successfully")
+        const token = await saveUser.getJWT();
+          res.cookie("token", token, {
+          expires : new Date(Date.now() + 8 * 3600000)
+
+        });
+
+        res.json({message:"User Added Succesfully!" , data : saveUser})
 
     }catch(error){
-        res.status(400).json({
-            message:"data not added",
-            error: error.message
+        console.log("SIGNUP ERROR:", error.message) // 👈 ADD THIS
+         res.status(400).json({
+        message:"data not added",
+        error: error.message
         })
     }
 })
@@ -53,9 +60,12 @@ authRoutes.post("/login", async (req, res) => {
 
     if (isPassValid) {
       const token = await user.getJWT();
-      res.cookie("token", token);
+      res.cookie("token", token, {
+        expires : new Date(Date.now() + 8 * 360000)
 
-      res.send("Login Success");
+      });
+
+      res.send(user);
     } else {
       throw new Error("Invalid credentials");
     }
