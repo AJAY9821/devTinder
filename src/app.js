@@ -3,9 +3,16 @@ const database = require("./config/db")
 const  cookieparser = require("cookie-parser")
 const app = express();
 const Cors = require("cors")
+const http = require("http")
+
+const initaialSocket = require("./util/socket")
+
 
 
 require('dotenv').config() 
+
+//require("./util/cronJobs")
+
 
 
 
@@ -26,18 +33,26 @@ app.use("/" ,profileRoutes)
 app.use("/" ,requestRouter)
 app.use("/" ,userRouter)
 
-console.log("Hey")
+
+const server  = http.createServer(app)
+initaialSocket(server)
+
+
+
+
 
 database()
 .then(() =>{
     console.log("Databse connected succefully")
-    app.listen(3000, () => {
+    server.listen(3000, () => {
     console.log("Server is running on port 3000...")
 })
 })
 .catch((err) =>{
     console.log("database cannot be connected")
 })
+
+require("./util/cronJobs")
 
 
 

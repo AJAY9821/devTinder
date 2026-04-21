@@ -27,7 +27,9 @@ authRoutes.post("/signup", async (req,res) => {
 
         const token = await saveUser.getJWT();
           res.cookie("token", token, {
-          expires : new Date(Date.now() + 8 * 3600000)
+          expires : new Date(Date.now() + 8 * 3600000),
+          httpOnly: true,
+          sameSite: "lax",
 
         });
 
@@ -61,7 +63,9 @@ authRoutes.post("/login", async (req, res) => {
     if (isPassValid) {
       const token = await user.getJWT();
       res.cookie("token", token, {
-        expires : new Date(Date.now() + 8 * 360000)
+        expires : new Date(Date.now() + 8 * 3600000),
+         httpOnly: true,
+         sameSite: "lax",
 
       });
 
