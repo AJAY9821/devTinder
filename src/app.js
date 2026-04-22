@@ -4,6 +4,7 @@ const  cookieparser = require("cookie-parser")
 const app = express();
 const Cors = require("cors")
 const http = require("http")
+const Chatrouter = require("./routes/chat")
 
 const initaialSocket = require("./util/socket")
 
@@ -32,6 +33,7 @@ app.use("/" ,authRoutes)
 app.use("/" ,profileRoutes)
 app.use("/" ,requestRouter)
 app.use("/" ,userRouter)
+app.use("/", Chatrouter)
 
 
 const server  = http.createServer(app)

@@ -4,7 +4,9 @@ const Chat = require("../model/Chat")
 
 
 const getSecretRoomID = (userId, targetUserId) => {
-    return crypto.createHash("sha256").update([userId,targetUserId].sort().join("_")).digest("hex")
+    return crypto.createHash("sha256")
+    .update([userId.toString(), targetUserId.toString()].sort().join("_"))
+    .digest("hex")
 }
 
 
@@ -23,10 +25,14 @@ const initaialSocket =  (server) => {
             socket.join(roomId)
         })
 
-        socket.on("sendMessage", async ({ firstName, userId, targetUserId, text })=>{
+        socket.on("sendMessage", async ({ firstName, lastName, userId, targetUserId, text })=>{
 
             try{
                 const roomId = getSecretRoomID(userId, targetUserId)
+                  console.log("emitting to room:", roomId) 
+
+                  // todo find that userid and targetUseid are friends or not, if not then do not save the message and do not emit the message
+                
                let chat = await Chat.findOne({participants : {$all:[userId,targetUserId]}})
 
                if(!chat){
@@ -39,7 +45,7 @@ const initaialSocket =  (server) => {
                chat.messages.push({senderId:userId, text});
                 await chat.save();
                 
-            io.to(roomId).emit("receiveMessage", { firstName, text })
+            io.to(roomId).emit("receiveMessage", { firstName, text ,lastName})
 
 
             }catch(err){
